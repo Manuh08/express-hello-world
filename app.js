@@ -2,19 +2,129 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.use(express.json())
-app.use(express.urlencoded({extended: true}));
+app.use(express.json());
 
+// ----------------------
+// BANCO DE DADOS FAKE
+// ----------------------
+let usuarios = [
+    { id: 1, nome: "Manu", email: "manu@gmail.com" },
+    { id: 2, nome: "Aline", email: "aline@gmail.com" }
+];
+
+// ----------------------
+// ROTAS DO DESAFIO
+// ----------------------
+
+// 1) GET /meunome
+app.get("/meunome", (req, res) => {
+    res.send("Meu nome é Fábio Duarte de Oliveira");
+});
+
+// 2) GET /tico
+app.get("/tico", (req, res) => {
+    res.send("teco");
+});
+
+// 3) GET /pokemons
+app.get("/pokemons", (req, res) => {
+    const pokemons = [
+        "Caterpie",
+        "Pidgeotto",
+        "Bulbasaur",
+        "Charmander",
+        "Squirtle",
+        "Krabby",
+        "Raticate",
+        "Muk",
+        "Tauros",
+        "Lapras"
+    ];
+    res.json(pokemons);
+});
+
+// 4) POST /series
+app.post("/series", (req, res) => {
+    const series = [
+        "Breaking Bad",
+        "Dark",
+        "The Office"
+    ];
+    res.json(series);
+});
+
+// ----------------------
+// ROTAS DA API DE USUÁRIOS
+// ----------------------
+
+// LISTAR TODOS
+app.get("/usuarios", (req, res) => {
+    res.json(usuarios);
+});
+
+// LISTAR POR ID
+app.get("/usuarios/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const usuario = usuarios.find(u => u.id === id);
+
+    if (!usuario) {
+        return res.status(404).json({ erro: "Usuário não encontrado" });
+    }
+
+    res.json(usuario);
+});
+
+// CRIAR USUÁRIO
+app.post("/usuarios", (req, res) => {
+    const { nome, email } = req.body;
+
+    if (!nome || !email) {
+        return res.status(400).json({ erro: "Nome e email são obrigatórios" });
+    }
+
+    const novo = {
+        id: usuarios.length + 1,
+        nome,
+        email
+    };
+
+    usuarios.push(novo);
+
+    res.status(201).json(novo);
+});
+
+// DELETAR USUÁRIO
+app.delete("/usuarios/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const index = usuarios.findIndex(u => u.id === id);
+
+    if (index === -1) {
+        return res.status(404).json({ erro: "Usuário não encontrado" });
+    }
+
+    usuarios.splice(index, 1);
+
+    res.json({ mensagem: "Usuário removido com sucesso" });
+});
+
+// ----------------------
+// ROTA PADRÃO DO HTML
+// ----------------------
 app.get("/", (req, res) => res.type('html').send(html));
 
-app.get('/req', (req, res) => {
-    console.log("Just got a request!")
-    res.send('Yo!')
-})
+app.get("/req", (req, res) => {
+    console.log("Just got a request!");
+    res.send("Yo!");
+});
 
+// ----------------------
+// INICIAR SERVIDOR
+// ----------------------
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
-
+// ----------------------
+// HTML (não mexa)
+// ----------------------
 const html = `
 <!DOCTYPE html>
 <html>
@@ -32,36 +142,19 @@ const html = `
       }, 500);
     </script>
     <style>
-      @import url("https://p.typekit.net/p.css?s=1&k=vnd5zic&ht=tk&f=39475.39476.39477.39478.39479.39480.39481.39482&a=18673890&app=typekit&e=css");
-      @font-face {
-        font-family: "neo-sans";
-        src: url("https://use.typekit.net/af/00ac0a/00000000000000003b9b2033/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("woff2"), url("https://use.typekit.net/af/00ac0a/00000000000000003b9b2033/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("woff"), url("https://use.typekit.net/af/00ac0a/00000000000000003b9b2033/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("opentype");
-        font-style: normal;
-        font-weight: 700;
-      }
-      html {
-        font-family: neo-sans;
-        font-weight: 700;
-        font-size: calc(62rem / 16);
-      }
-      body {
-        background: white;
-      }
+      html { font-family: sans-serif; font-size: 30px; }
+      body { background: white; }
       section {
         border-radius: 1em;
         padding: 1em;
         position: absolute;
-        top: 50%;
-        left: 50%;
-        margin-right: -50%;
+        top: 50%; left: 50%;
         transform: translate(-50%, -50%);
       }
     </style>
   </head>
   <body>
-    <section>
-      Hello Express API 
-    </section>
+    <section>Hello Express API</section>
   </body>
 </html>
-`
+`;
