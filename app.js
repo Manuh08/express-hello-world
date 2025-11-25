@@ -103,7 +103,7 @@ app.delete("/usuarios/:id", (req, res) => {
 });
 
 // ----------------------
-// 🔹 ROTA PARA LISTAR TODAS AS ROTAS
+// 🔹 ROTA PARA LISTAR TODAS AS ROTAS ASSIM
 // ----------------------
 app.get("/rotas", (req, res) => {
   const rotas = listEndpoints(app);
