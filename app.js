@@ -1,7 +1,5 @@
-const listEndpoints = require('express-list-endpoints');
-
-
 const express = require("express");
+const listEndpoints = require("express-list-endpoints");
 const app = express();
 const port = process.env.PORT || 3001;
 
@@ -27,6 +25,7 @@ const html = `
     <a href="/tico">/tico</a>
     <a href="/pokemons">/pokemons</a>
     <a href="/usuarios">/usuarios</a>
+    <a href="/rotas">/rotas (listar todas)</a>
   </body>
 </html>
 `;
@@ -46,9 +45,9 @@ app.get("/meunome", (req, res) => {
   res.send("Meu nome é Fábio Duarte de Oliveira");
 });
 
-
-
-app.get("/tico", (req, res) => res.send("teco"));
+app.get("/tico", (req, res) => {
+  res.send("teco");
+});
 
 app.get("/pokemons", (req, res) => {
   res.json([
@@ -56,12 +55,6 @@ app.get("/pokemons", (req, res) => {
     "Squirtle", "Krabby", "Raticate", "Muk",
     "Tauros", "Lapras"
   ]);
-
-  app.get("/rotas", (req, res) => {
-  const rotas = listEndpoints(app);
-  res.json(rotas);
-});
-
 });
 
 // Agora o POST /series pode receber a série enviada pelo usuário
@@ -70,7 +63,7 @@ app.post("/series", (req, res) => {
   const listaSeries = ["Breaking Bad", "Dark", "The Office"];
 
   if (nome) {
-    listaSeries.push(nome); // adiciona a nova série
+    listaSeries.push(nome);
   }
 
   res.json(listaSeries);
@@ -84,8 +77,9 @@ app.get("/usuarios", (req, res) => res.json(usuarios));
 app.get("/usuarios/:id", (req, res) => {
   const id = Number(req.params.id);
   const usuario = usuarios.find(u => u.id === id);
-  usuario ? res.json(usuario) :
-    res.status(404).json({ erro: "Usuário não encontrado" });
+  usuario
+    ? res.json(usuario)
+    : res.status(404).json({ erro: "Usuário não encontrado" });
 });
 
 app.post("/usuarios", (req, res) => {
@@ -106,6 +100,14 @@ app.delete("/usuarios/:id", (req, res) => {
   }
   usuarios.splice(index, 1);
   res.json({ mensagem: "Usuário removido com sucesso" });
+});
+
+// ----------------------
+// 🔹 ROTA PARA LISTAR TODAS AS ROTAS
+// ----------------------
+app.get("/rotas", (req, res) => {
+  const rotas = listEndpoints(app);
+  res.json(rotas);
 });
 
 // ----------------------
