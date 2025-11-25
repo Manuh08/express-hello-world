@@ -11,7 +11,8 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "express-list-endpoints": "^7.1.1"
   },
   "engines": {
     "node": ">=14"
