@@ -108,22 +108,7 @@ app.delete("/usuarios/:id", (req, res) => {
 });
 
 // ----------------------
-// ROTA PADRÃO DO HTML
-// ----------------------
-app.get("/", (req, res) => res.type('html').send(html));
-
-app.get("/req", (req, res) => {
-    console.log("Just got a request!");
-    res.send("Yo!");
-});
-
-// ----------------------
-// INICIAR SERVIDOR
-// ----------------------
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-
-// ----------------------
-// HTML (não mexa)
+// HTML DA PÁGINA INICIAL
 // ----------------------
 const html = `
 <!DOCTYPE html>
@@ -158,3 +143,13 @@ const html = `
   </body>
 </html>
 `;
+
+// ----------------------
+// ROTA PADRÃO (Página inicial)
+// ----------------------
+app.get("/", (req, res) => res.type('html').send(html));
+
+// ----------------------
+// INICIAR SERVIDOR
+// ----------------------
+app.listen(port, () => console.log(`Servidor rodando na porta ${port}!`));
